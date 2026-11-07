@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#0f1115">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/icon.svg" type="image/svg+xml">
+    <title>Гостевой режим ПК — панель</title>
+    <link rel="stylesheet" href="/static/style.css?v=2">
+</head>
+<body>
+    <header>
+        <h1>Гостевой режим ПК</h1>
+        <button class="btn-red panic" onclick="if(confirm('Отключить гостевой режим полностью?')) sendControl('/control/disable_guest_mode')">⛔ Отключить режим</button>
+        <form method="post" action="/logout"><button type="submit" class="link-btn">Выйти</button></form>
+    </header>
+
+    <section class="status-bar">
+        <span id="status-online" class="badge">—</span>
+        <span id="status-dry-run" class="badge">—</span>
+        <span id="status-mode" class="badge">—</span>
+        <span id="status-blocking" class="badge">—</span>
+        <span id="status-queue" class="badge">—</span>
+        <span id="status-seen" class="badge">—</span>
+        <span id="status-lock" class="badge badge-warn" hidden></span>
+        <span id="status-extra" class="badge badge-warn" hidden></span>
+    </section>
+
+    <nav class="tabs">
+        <button class="tab active" data-tab="guest" onclick="showTab('guest')">🛡️ Гостевой режим</button>
+        <button class="tab" data-tab="remote" onclick="showTab('remote')">🖱️ Управление ПК</button>
+    </nav>
+
+    <main class="grid" id="tab-guest">
+        <section class="card">
+            <h2>Экран</h2>
+            <img id="screenshot" src="/screenshot.jpg" alt="скриншот ещё не получен">
+            <p id="screenshot-time" class="muted"></p>
+            <div class="buttons">
+                <button class="stream-toggle" onclick="toggleStream()">▶️ Включить трансляцию</button>
+                <button onclick="sendControl('/control/snapshot_now')">📸 Снимок сейчас</button>
+            </div>
+            <p class="muted">Трансляция — это частые кадры (несколько в секунду), а не просто периодический скриншот. Не забывайте её выключать.</p>
+        </section>
+
+        <section class="card">
+            <h2>Управление</h2>
+            <div class="buttons grid2">
+                <button onclick="sendControl('/control/lock')">🔒 Показать окно пароля</button>
+                <button onclick="sendControl('/control/let_in')" class="btn-green">🔓 Впустить</button>
+                <button onclick="sendControl('/control/block_apps_on')">🚫 Блокировать приложения</button>
+                <button onclick="sendControl('/control/block_apps_off')">✅ Разблокировать приложения</button>
+            </div>
+
+            <h3>Розыгрыши</h3>
+            <div class="buttons grid2">
+                <button onclick="sendControl('/control/prank/rotate_180')">🙃 Перевернуть экран</button>
+                <button onclick="sendControl('/control/prank/minimize_all')">➖ Свернуть всё</button>
+                <button onclick="sendControl('/control/prank/switch_layout')">⌨️ Сменить раскладку</button>
+                <button onclick="sendControl('/control/prank/play_sound')">🔊 Проиграть звук</button>
+                <button onclick="sendControl('/control/prank/toggle_mute')">🔇 Звук вкл/выкл</button>
+                <button onclick="sendControl('/control/prank/volume_up')">🔊 Громче</button>
+                <button onclick="sendControl('/control/prank/volume_down')">🔉 Тише</button>
+                <button onclick="sendControl('/control/prank/hide_cursor')">🫥 Спрятать курсор</button>
+                <button onclick="sendControl('/control/prank/jitter_cursor')">🖱️ Подёргать курсор</button>
+                <button onclick="sendControl('/control/prank/swap_mouse_buttons')">🔁 Поменять кнопки мыши</button>
+                <button onclick="sendMessageBox()">💬 Отправить сообщение</button>
+                <input type="text" class="full" id="message-text" placeholder="Свой текст (необязательно)">
+                <button onclick="sendControl('/control/prank_restore_all')" class="btn-green full">↩️ Всё вернуть как было</button>
+            </div>
+
+            <h3>Команды ПК</h3>
+            <div class="buttons">
+                <button onclick="sendControl('/control/lock_workstation')">🖥️ Заблокировать сеанс (как Win+L)</button>
+                <input type="text" id="open-url-text" placeholder="https://example.com">
+                <button onclick="sendOpenUrl()">🌐 Открыть ссылку у гостя</button>
+            </div>
+
+            <h3>Аварийный выход</h3>
+            <div class="buttons">
+                <button onclick="if(confirm('Отключить гостевой режим полностью?')) sendControl('/control/disable_guest_mode')" class="btn-red">⛔ Отключить режим</button>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Белый список приложений</h2>
+            <p class="muted">Отмеченные программы можно открывать, когда включена блокировка. Остальные (из списка процессов справа) будут закрываться.</p>
+            <input type="text" id="whitelist-filter" class="filter-input" placeholder="🔎 Поиск по программам" oninput="renderWhitelist(lastProcesses, null)">
+            <div id="whitelist-editor" class="process-list whitelist-editor"></div>
+            <div class="buttons">
+                <input type="text" id="whitelist-add-text" placeholder="имя_программы.exe">
+                <button onclick="addWhitelistInput()">➕ Добавить в список</button>
+                <button onclick="allowAllRunning()">☑️ Разрешить всё, что сейчас запущено</button>
+                <button onclick="saveWhitelist()" class="btn-green">💾 Сохранить список</button>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Процессы на ПК</h2>
+            <ul id="process-list" class="process-list"></ul>
+        </section>
+
+        <section class="card">
+            <h2>Последние события <button class="link-btn" onclick="clearEvents()">очистить</button></h2>
+            <ul id="event-list" class="event-list"></ul>
+        </section>
+    </main>
+
+    <main class="grid remote-grid" id="tab-remote" hidden>
+        <section class="card remote-screen-card">
+            <h2>Экран
+                <span class="click-mode">
+                    <label><input type="radio" name="click-mode" value="left" checked> ЛКМ</label>
+                    <label><input type="radio" name="click-mode" value="right"> ПКМ</label>
+                    <label><input type="radio" name="click-mode" value="double"> Двойной</label>
+                </span>
+            </h2>
+            <img id="remote-screen" class="remote-screen" src="/screenshot.jpg" alt="экран ПК" onclick="screenClick(event)">
+            <p class="muted">Клик по картинке кликает в то же место на компьютере. Для плавной картинки включите трансляцию.</p>
+            <div class="buttons grid2">
+                <button class="stream-toggle" onclick="toggleStream()">▶️ Включить трансляцию</button>
+                <button onclick="sendControl('/control/snapshot_now')">📸 Снимок сейчас</button>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Мышь</h2>
+            <div class="pad">
+                <span></span><button onclick="moveMouse(0,-1)">⬆️</button><span></span>
+                <button onclick="moveMouse(-1,0)">⬅️</button>
+                <select id="move-step" title="Шаг, пикселей"><option value="10">10 px</option><option value="50" selected>50 px</option><option value="200">200 px</option></select>
+                <button onclick="moveMouse(1,0)">➡️</button>
+                <span></span><button onclick="moveMouse(0,1)">⬇️</button><span></span>
+            </div>
+            <div class="buttons grid2">
+                <button onclick="remote({action:'click', button:'left'})">👆 Левый клик</button>
+                <button onclick="remote({action:'click', button:'right'})">👉 Правый клик</button>
+                <button onclick="remote({action:'click', button:'left', double:true})">✌️ Двойной клик</button>
+                <button onclick="remote({action:'click', button:'middle'})">🖲️ Средняя кнопка</button>
+                <button onclick="remote({action:'scroll', amount:3})">🔼 Колёсико вверх</button>
+                <button onclick="remote({action:'scroll', amount:-3})">🔽 Колёсико вниз</button>
+            </div>
+
+            <h3>Клавиатура</h3>
+            <div class="buttons">
+                <input type="text" id="type-text" placeholder="Текст, который напечатать на ПК" onkeydown="if(event.key==='Enter') typeText(true)">
+            </div>
+            <div class="buttons grid2">
+                <button onclick="typeText(false)">⌨️ Напечатать</button>
+                <button onclick="typeText(true)">↩️ Напечатать + Enter</button>
+            </div>
+            <div class="hotkeys">
+                <button onclick="hotkey('enter')">Enter</button>
+                <button onclick="hotkey('backspace')">⌫</button>
+                <button onclick="hotkey('esc')">Esc</button>
+                <button onclick="hotkey('tab')">Tab</button>
+                <button onclick="hotkey('space')">Пробел</button>
+                <button onclick="hotkey('delete')">Del</button>
+                <button onclick="hotkey('up')">↑</button>
+                <button onclick="hotkey('down')">↓</button>
+                <button onclick="hotkey('left')">←</button>
+                <button onclick="hotkey('right')">→</button>
+                <button onclick="hotkey('alt+tab')">Alt+Tab</button>
+                <button onclick="hotkey('alt+f4')">Alt+F4</button>
+                <button onclick="hotkey('win')">Win</button>
+                <button onclick="hotkey('win+d')">Win+D</button>
+                <button onclick="hotkey('ctrl+c')">Ctrl+C</button>
+                <button onclick="hotkey('ctrl+v')">Ctrl+V</button>
+                <button onclick="hotkey('ctrl+z')">Ctrl+Z</button>
+                <button onclick="hotkey('ctrl+a')">Ctrl+A</button>
+                <button onclick="hotkey('ctrl+t')">Ctrl+T</button>
+                <button onclick="hotkey('ctrl+w')">Ctrl+W</button>
+                <button onclick="hotkey('f5')">F5</button>
+                <button onclick="hotkey('f11')">F11</button>
+                <button onclick="hotkey('ctrl+shift+esc')">Диспетчер</button>
+                <button onclick="hotkey('win+shift+s')">Ножницы</button>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Программы и поиск</h2>
+            <div class="buttons grid2">
+                <button onclick="openApp('notepad')">📝 Блокнот</button>
+                <button onclick="openApp('calc')">🧮 Калькулятор</button>
+                <button onclick="openApp('explorer')">📁 Проводник</button>
+                <button onclick="openApp('mspaint')">🎨 Paint</button>
+                <input type="text" id="app-name" placeholder="Своя программа: chrome, winword, cmd…" onkeydown="if(event.key==='Enter') openApp()">
+                <button onclick="openApp()" class="full">🚀 Запустить</button>
+            </div>
+            <h3>Поиск в интернете</h3>
+            <div class="buttons grid2">
+                <input type="text" id="search-text" placeholder="Что найти" onkeydown="if(event.key==='Enter') search('yandex')">
+                <button onclick="search('yandex')">🔎 Яндекс</button>
+                <button onclick="search('youtube')">▶️ YouTube</button>
+            </div>
+
+            <h3>Отправить файл на ПК</h3>
+            <p class="muted">Файл до 50 МБ сохранится в папку «Загрузки» на компьютере.</p>
+            <div class="buttons">
+                <input type="file" id="upload-file">
+                <button onclick="uploadFile()" class="btn-green">📤 Отправить</button>
+            </div>
+        </section>
+    </main>
+
+    <script src="/static/names.js"></script>
+    <script src="/static/dashboard.js?v=2"></script>
+</body>
+</html>

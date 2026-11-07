@@ -1,0 +1,292 @@
+:root {
+    --bg: #0f1115;
+    --card-bg: #181b22;
+    --text: #e6e6e6;
+    --muted: #8a8f98;
+    --accent: #5b8def;
+    --green: #3fb950;
+    --red: #e5534b;
+    --border: #2a2e37;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Segoe UI", sans-serif;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+}
+
+.link-btn {
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+}
+
+.login-body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.login-box {
+    background: var(--card-bg);
+    padding: 40px;
+    border-radius: 12px;
+    width: 320px;
+    text-align: center;
+    border: 1px solid var(--border);
+}
+
+.login-box input {
+    width: 100%;
+    padding: 10px;
+    margin: 12px 0;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: #10131a;
+    color: var(--text);
+}
+
+.login-box button, .buttons button {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+    background: var(--accent);
+    color: white;
+    cursor: pointer;
+    margin-top: 6px;
+    font-size: 14px;
+}
+
+.login-box button:hover, .buttons button:hover { opacity: 0.85; }
+
+.error { color: var(--red); }
+.subtitle { color: var(--muted); margin-top: -8px; }
+
+.status-bar {
+    display: flex;
+    gap: 10px;
+    padding: 12px 24px;
+    flex-wrap: wrap;
+}
+
+.badge {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+}
+.badge-ok { border-color: var(--green); color: var(--green); }
+.badge-bad { border-color: var(--red); color: var(--red); }
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    padding: 0 24px 24px;
+}
+
+@media (max-width: 800px) {
+    .grid { grid-template-columns: 1fr; }
+}
+
+.card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+}
+
+.card h3 { margin-top: 18px; margin-bottom: 8px; font-size: 14px; color: var(--muted); }
+
+.card img {
+    width: 100%;
+    border-radius: 6px;
+    background: #000;
+    min-height: 120px;
+}
+
+.muted { color: var(--muted); font-size: 12px; }
+
+.buttons { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+.btn-green { background: var(--green) !important; }
+.btn-red { background: var(--red) !important; }
+
+.process-list, .event-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 320px;
+    overflow-y: auto;
+    font-size: 13px;
+}
+
+.process-list li, .event-list li {
+    padding: 4px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.event-warning { color: #f5a623; }
+.event-error { color: var(--red); }
+
+.buttons input[type="text"] {
+    width: 100%;
+    padding: 9px 10px;
+    margin-top: 6px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: #10131a;
+    color: var(--text);
+    font-size: 14px;
+}
+
+.whitelist-editor {
+    max-height: 260px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 8px;
+}
+
+.whitelist-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 3px 0;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.whitelist-item input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+}
+
+.badge-warn { border-color: #f5a623; color: #f5a623; }
+[hidden] { display: none !important; }
+
+.panic {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.filter-input {
+    width: 100%;
+    padding: 8px 10px;
+    margin-bottom: 8px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: #10131a;
+    color: var(--text);
+}
+
+.card h2 { display: flex; justify-content: space-between; align-items: center; }
+.card h2 .link-btn { font-size: 12px; }
+.buttons button:active { transform: scale(0.98); }
+
+#toasts {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 100;
+}
+.toast {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+}
+.toast-ok { border-left-color: var(--green); }
+.toast-bad { border-left-color: var(--red); }
+
+/* ---------- имена программ ---------- */
+.exe-name { color: var(--muted); font-size: 11px; margin-left: 6px; }
+.process-list li { display: flex; align-items: baseline; flex-wrap: wrap; }
+.whitelist-item { flex-wrap: wrap; }
+
+/* ---------- сетка кнопок (2 колонки) ---------- */
+.buttons.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.buttons.grid2 .full, .buttons.grid2 input { grid-column: 1 / -1; }
+.buttons.grid2 button, .buttons.grid2 input { margin-top: 0; }
+.buttons button { min-height: 44px; }
+.buttons button:disabled { opacity: 0.5; }
+
+/* ---------- телефон ---------- */
+body { padding-bottom: env(safe-area-inset-bottom); -webkit-tap-highlight-color: transparent; }
+header { padding-top: calc(12px + env(safe-area-inset-top)); position: sticky; top: 0; background: var(--bg); z-index: 50; }
+input[type="text"], input[type="password"] { font-size: 16px !important; } /* iOS не зумит поле при фокусе */
+.login-box { max-width: 92vw; }
+img { max-width: 100%; }
+
+@media (max-width: 800px) {
+    header { padding: calc(8px + env(safe-area-inset-top)) 12px 8px; gap: 8px; }
+    header h1 { font-size: 17px; margin: 0; }
+    .panic { padding: 10px 12px; font-size: 14px; }
+    .status-bar { padding: 8px 12px; flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .badge { white-space: nowrap; flex: none; }
+    .grid { padding: 0 12px 24px; gap: 12px; }
+    .card { padding: 12px; }
+    .buttons button { min-height: 48px; font-size: 15px; padding: 10px 8px; }
+    .buttons input[type="text"], .filter-input { min-height: 44px; }
+    .process-list, .event-list { max-height: 240px; }
+    .whitelist-editor { max-height: 300px; }
+    .whitelist-item { padding: 8px 0; font-size: 15px; }
+    .whitelist-item input[type="checkbox"] { width: 22px; height: 22px; }
+    #toasts { left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); }
+}
+
+@media (max-width: 380px) {
+    .buttons.grid2 { grid-template-columns: 1fr; }
+}
+
+/* ===== Вкладки и «Управление ПК» ===== */
+.tabs { display: flex; gap: 8px; padding: 0 24px 16px; }
+.tab {
+    flex: 1; max-width: 260px; min-height: 44px; padding: 10px; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--card-bg); color: var(--text);
+    font-size: 15px; cursor: pointer;
+}
+.tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.remote-grid .remote-screen-card { grid-column: 1 / -1; }
+.card img.remote-screen { cursor: crosshair; }
+.click-mode { display: flex; gap: 12px; font-size: 13px; font-weight: 400; }
+.click-mode label { display: flex; align-items: center; gap: 4px; cursor: pointer; }
+.pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; max-width: 260px; margin: 0 auto 12px; }
+.pad button, .hotkeys button {
+    min-height: 44px; border: none; border-radius: 6px; background: var(--accent);
+    color: #fff; font-size: 15px; cursor: pointer;
+}
+.pad select {
+    min-height: 44px; border-radius: 6px; border: 1px solid var(--border);
+    background: var(--bg); color: var(--text); text-align: center;
+}
+.hotkeys { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.hotkeys button { font-size: 13px; padding: 6px 2px; }
+.pad button:active, .hotkeys button:active { transform: scale(0.96); }
+.buttons input[type="file"] { color: var(--text); padding: 8px 0; }
+@media (max-width: 800px) { .tabs { padding: 0 12px 12px; } .tab { max-width: none; } }

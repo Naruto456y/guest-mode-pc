@@ -1,0 +1,8 @@
+requests>=2.31
+psutil>=5.9
+mss>=9.0
+Pillow>=10.0
+python-dotenv>=1.0
+# tkinter входит в стандартную поставку Python на Windows — ставить
+# отдельно не нужно (если его нет, переустановите Python с опцией
+# "tcl/tk and IDL" при установке).

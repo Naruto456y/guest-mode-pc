@@ -1,0 +1,25 @@
+# Секреты и локальные настройки
+.env
+agent/.env
+server/.env
+
+# Логи
+*.log
+events.jsonl
+.pytest_cache/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Аварийный флаг (создаётся/удаляется руками, не должен быть в репозитории)
+guest_mode_off.flag
+
+# Вывод запусков
+*.out
+server.pid
+.claude/
+CLAUDE.md
+REPORT.md
